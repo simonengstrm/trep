@@ -1,0 +1,79 @@
+build/
+
+# Compiled object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Other files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CMakeLists.txt.user
+
+# Qt generated files
+*.moc
+*.qrc
+*.ui
+*.qch
+*.qhc
+*.pro.user
+*.qbs.user
+*.qbs
+*.qmlc
+*.jsc
+*.qmlproject.user
+
+# Code::Blocks generated files
+*.depend
+*.layout
+*.cbp
+*.layout
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/
+
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xcuserstate
+*.xcodeproj
+*.xcconfig
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
