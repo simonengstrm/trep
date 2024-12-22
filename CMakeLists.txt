@@ -34,6 +34,7 @@ endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Add the executable
-set(SOURCES main.cxx colors.hxx)
-add_executable(trep main.cxx)
+# Add all sources to the SOURCES variable
+file(GLOB SOURCES "src/*.cxx" "src/*.hxx")
+add_executable(trep ${SOURCES})
 target_link_libraries(trep PRIVATE Boost::regex)

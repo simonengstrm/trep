@@ -1,5 +1,5 @@
 build*/
-*.txt
+out.txt
 
 # Clangd
 .cache/
