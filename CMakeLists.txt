@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 # Set the project name
 project(trep)
@@ -17,7 +17,19 @@ set(CMAKE_CXX_COMPILER clang++)
 # Set flags
 add_compile_options(-Wno-c23-extensions)
 
+# Inclue boost library
+find_package(Boost CONFIG REQUIRED COMPONENTS regex)
+
+# Make clangd find compile commands
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Make clangd find boost regex
+include_directories(${Boost_INCLUDE_DIRS})
+
+# Set release flags
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Add the executable
 set(SOURCES main.cxx colors.hxx)
 add_executable(trep main.cxx)
+target_link_libraries(trep PRIVATE Boost::regex)

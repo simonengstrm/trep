@@ -1,3 +1,4 @@
+#include <boost/regex.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -15,8 +16,8 @@ using std::cout, std::endl;
 
 struct Command {
     std::string pattern;
-    std::regex regex;
     std::string path;
+    boost::regex regex;
 
     std::string to_string() const {
         std::stringstream ss;
@@ -34,7 +35,7 @@ struct Match {
         std::string highlight_line = line;
         for (const auto &[start, end] : positions) {
             highlight_line.replace(start, end - start,
-                                   YELLOW + line.substr(start, end - start) +
+                                   BOLDRED + line.substr(start, end - start) +
                                        RESET);
         }
         return GREEN + std::to_string(line_number) + RESET + ": " +
@@ -76,7 +77,7 @@ std::optional<Command> parse_input(int argc, char *argv[]) {
 
     // Try parsing regex
     try {
-        command.regex = std::regex(command.pattern);
+        command.regex = boost::regex(command.pattern);
     } catch (std::regex_error &e) {
         std::cerr << "Invalid regex pattern: " << command.pattern << std::endl;
         return std::nullopt;
@@ -101,8 +102,8 @@ std::vector<Match> search_file(const Command &cmd, const std::string &path) {
             line_number++;
             // Search for pattern in line
             // If found, add to fileMatches
-            std::smatch m;
-            if (std::regex_search(line, m, cmd.regex)) {
+            boost::smatch m;
+            if (boost::regex_search(line, m, cmd.regex)) {
                 std::vector<std::pair<int, int>> positions;
                 for (const auto &sm : m) {
                     positions.push_back(
@@ -128,9 +129,9 @@ std::optional<SearchResult> search(const Command &cmd) {
     if (std::filesystem::is_regular_file(cmd.path)) {
         // Search file
         auto fileMatches = search_file(cmd, cmd.path);
-        searchResult.matches[cmd.path] = fileMatches;
+        if (!fileMatches.empty())
+            searchResult.matches[cmd.path] = fileMatches;
     } else if (std::filesystem::is_directory(cmd.path)) {
-        // Search all files in directory
         for (const auto &entry :
              std::filesystem::recursive_directory_iterator(cmd.path)) {
             if (std::filesystem::is_regular_file(entry.path())) {

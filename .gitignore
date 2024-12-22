@@ -1,5 +1,8 @@
 build/
 
+# Clangd
+.cache/
+
 # Compiled object files
 *.o
 *.obj
