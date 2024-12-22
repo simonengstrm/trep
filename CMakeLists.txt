@@ -26,6 +26,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Make clangd find boost regex
 include_directories(${Boost_INCLUDE_DIRS})
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+endif()
+
 # Set release flags
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 

@@ -21,7 +21,7 @@ struct Command {
 
     std::string to_string() const {
         std::stringstream ss;
-        ss << "Pattern: " << pattern << "\tPath: " << path << std::endl;
+        ss << "Pattern: " << pattern << "\tPath: " << path << endl;
         return ss.str();
     }
 };
@@ -50,11 +50,11 @@ struct SearchResult {
     std::string to_string() const {
         std::stringstream ss;
         for (const auto &[path, fileMatches] : matches) {
-            ss << MAGENTA << path << RESET << "\t" << std::endl;
+            ss << MAGENTA << path << RESET << "\t" << endl;
             for (const auto &match : fileMatches) {
-                ss << match.to_string() << std::endl;
+                ss << match.to_string() << endl;
             }
-            ss << std::endl;
+            ss << endl;
         }
 
         return ss.str();
@@ -71,7 +71,7 @@ std::optional<Command> parse_input(int argc, char *argv[]) {
         command.path = argv[2];
     } else {
         std::cerr << "Invalid input. Usage: " << argv[0] << " <pattern> <path>"
-                  << std::endl;
+                  << endl;
         return std::nullopt;
     }
 
@@ -79,7 +79,7 @@ std::optional<Command> parse_input(int argc, char *argv[]) {
     try {
         command.regex = boost::regex(command.pattern);
     } catch (std::regex_error &e) {
-        std::cerr << "Invalid regex pattern: " << command.pattern << std::endl;
+        std::cerr << "Invalid regex pattern: " << command.pattern << endl;
         return std::nullopt;
     }
 
@@ -121,7 +121,7 @@ std::optional<SearchResult> search(const Command &cmd) {
     // If cmd path is a file, search the file, else search all files in the
     // directory. Only perform search_file on path if it exists
     if (!std::filesystem::exists(cmd.path)) {
-        std::cerr << "Path does not exist: " << cmd.path << std::endl;
+        std::cerr << "Path does not exist: " << cmd.path << endl;
         return std::nullopt;
     }
 
@@ -149,15 +149,15 @@ int main(int argc, char *argv[]) {
     // Parse input
     auto cmd = parse_input(argc, argv);
     if (!cmd.has_value()) {
-        std::cerr << "Could not parse input." << std::endl;
-        std::cerr << "Usage: " << argv[0] << " <pattern> <path>" << std::endl;
+        std::cerr << "Could not parse input." << endl;
+        std::cerr << "Usage: " << argv[0] << " <pattern> <path>" << endl;
         return 1;
     }
 
     // Search for pattern in path
     auto matches = search(cmd.value());
     if (!matches.has_value()) {
-        std::cerr << "Could not search for pattern." << std::endl;
+        std::cerr << "Could not search for pattern." << endl;
         return 1;
     }
 
