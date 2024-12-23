@@ -62,6 +62,8 @@ std::expected<SearchResult, SearchError> search(const Command &cmd) {
                 }
             }
         } else {
+            // Recursive search, break at depth 5
+            auto it = std::filesystem::recursive_directory_iterator(cmd.path);
             for (const auto &entry :
                  std::filesystem::recursive_directory_iterator(cmd.path)) {
                 if (std::filesystem::is_regular_file(entry.path())) {
@@ -69,6 +71,9 @@ std::expected<SearchResult, SearchError> search(const Command &cmd) {
                     auto fileMatches = search_file(cmd, entry.path());
                     if (!fileMatches.empty())
                         searchResult.matches[entry.path()] = fileMatches;
+                }
+                if (it.depth() > 5) {
+                    it.disable_recursion_pending();
                 }
             }
         }

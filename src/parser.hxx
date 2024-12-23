@@ -26,8 +26,9 @@ struct Config {
 
     std::string to_string() const {
         std::stringstream ss;
-        ss << "Ignore case: " << ignore_case << "\tRecursive: " << recursive
-           << "\tVerbose: " << verbose << endl;
+        ss << "Ignore case: \t" << (ignore_case ? "true" : "false") << endl;
+        ss << "Recursive: \t" << (recursive ? "true" : "false") << endl;
+        ss << "Verbose: \t" << (verbose ? "true" : "false") << endl;
         return ss.str();
     }
 };

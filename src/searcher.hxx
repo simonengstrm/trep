@@ -47,7 +47,8 @@ struct SearchResult {
         std::stringstream ss;
 
         if (cmd.config.verbose) {
-            ss << cmd.to_string() << endl;
+            ss << cmd.to_string();
+            ss << "Files searched: " << files_searched << endl;
             ss << cmd.config.to_string() << endl;
         }
 
