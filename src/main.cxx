@@ -8,17 +8,16 @@ using std::cout, std::endl;
 
 int main(int argc, char *argv[]) {
     // Parse input
-    auto cmd = parse_input(argc, argv);
-    if (!cmd.has_value()) {
-        std::cerr << "Could not parse input." << endl;
-        std::cerr << "Usage: " << argv[0] << " <pattern> <path>" << endl;
+    auto result = parse_input(argc, argv);
+    if (!result.has_value()) {
+        std::cerr << result.error() << endl;
         return 1;
     }
 
     // Search for pattern in path
-    auto matches = search(cmd.value());
+    auto matches = search(result.value());
     if (!matches.has_value()) {
-        std::cerr << "Could not search for pattern." << endl;
+        std::cerr << matches.error() << endl;
         return 1;
     }
 

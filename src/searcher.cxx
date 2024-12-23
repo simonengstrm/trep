@@ -1,14 +1,10 @@
 #include <boost/regex.hpp>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
-#include <optional>
 #include <string>
 #include <vector>
 
 #include "searcher.hxx"
-
-using std::endl;
 
 /*
  * Searches a file for a regex pattern
@@ -41,27 +37,39 @@ std::vector<Match> search_file(const Command &cmd, const std::string &path) {
     return fileMatches;
 }
 
-std::optional<SearchResult> search(const Command &cmd) {
+std::expected<SearchResult, SearchError> search(const Command &cmd) {
     // If cmd path is a file, search the file, else search all files in the
     // directory. Only perform search_file on path if it exists
     if (!std::filesystem::exists(cmd.path)) {
-        std::cerr << "Path does not exist: " << cmd.path << endl;
-        return std::nullopt;
+        return std::unexpected(SearchError{"Path does not exist: " + cmd.path});
     }
 
     SearchResult searchResult{cmd};
     if (std::filesystem::is_regular_file(cmd.path)) {
-        // Search file
+        searchResult.files_searched++;
         auto fileMatches = search_file(cmd, cmd.path);
         if (!fileMatches.empty())
             searchResult.matches[cmd.path] = fileMatches;
     } else if (std::filesystem::is_directory(cmd.path)) {
-        for (const auto &entry :
-             std::filesystem::recursive_directory_iterator(cmd.path)) {
-            if (std::filesystem::is_regular_file(entry.path())) {
-                auto fileMatches = search_file(cmd, entry.path());
-                if (!fileMatches.empty())
-                    searchResult.matches[entry.path()] = fileMatches;
+        if (!cmd.config.recursive) {
+            for (const auto &entry :
+                 std::filesystem::directory_iterator(cmd.path)) {
+                if (std::filesystem::is_regular_file(entry.path())) {
+                    searchResult.files_searched++;
+                    auto fileMatches = search_file(cmd, entry.path());
+                    if (!fileMatches.empty())
+                        searchResult.matches[entry.path()] = fileMatches;
+                }
+            }
+        } else {
+            for (const auto &entry :
+                 std::filesystem::recursive_directory_iterator(cmd.path)) {
+                if (std::filesystem::is_regular_file(entry.path())) {
+                    searchResult.files_searched++;
+                    auto fileMatches = search_file(cmd, entry.path());
+                    if (!fileMatches.empty())
+                        searchResult.matches[entry.path()] = fileMatches;
+                }
             }
         }
     }

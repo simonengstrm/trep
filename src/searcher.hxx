@@ -10,6 +10,17 @@
 #include "colors.hxx"
 #include "parser.hxx"
 
+struct SearchError {
+    std::string message;
+
+    // Overload the << operator to print the error message
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const SearchError &error) {
+        os << error.message;
+        return os;
+    }
+};
+
 struct Match {
     std::string line;
     int line_number;
@@ -29,10 +40,17 @@ struct Match {
 
 struct SearchResult {
     const Command &cmd;
+    int files_searched;
     std::map<std::string, std::vector<Match>> matches;
 
     std::string to_string() const {
         std::stringstream ss;
+
+        if (cmd.config.verbose) {
+            ss << cmd.to_string() << endl;
+            ss << cmd.config.to_string() << endl;
+        }
+
         for (const auto &[path, fileMatches] : matches) {
             ss << MAGENTA << path << RESET << "\t" << endl;
             for (const auto &match : fileMatches) {
@@ -45,6 +63,6 @@ struct SearchResult {
     }
 };
 
-std::optional<SearchResult> search(const Command &cmd);
+std::expected<SearchResult, SearchError> search(const Command &cmd);
 
 #endif // SEARCHER_HXX
